@@ -55,10 +55,10 @@ public class Squadron {
 		this.target = target;
 	}
 	
-	public void setSpaceships(List<Spaceship> spaceships)
+	/*public void setSpaceships(List<Spaceship> spaceships)
 	{
 		this.spaceships = spaceships;
-	}
+	}*/
 	
 	public Squadron(int id, int owner, int shipNbr, int target)
 	{
@@ -66,7 +66,7 @@ public class Squadron {
 		this.owner = owner;
 		this.shipNbr = shipNbr;
 		this.target = target;
-		this.spaceships = null;
+		//this.spaceships = null;
 	}
 	public Squadron(int id, int owner, int shipNbr, int target, List<Spaceship> spaceships)
 	{
@@ -74,6 +74,13 @@ public class Squadron {
 		this.owner = owner;
 		this.shipNbr = shipNbr;
 		this.target = target;
-		this.spaceships = spaceships;
+		//this.spaceships = spaceships;
+	
+	}
+	
+	public void changeTarget(Planet target)
+	{
+		//récupérer la demande
+		setTarget(target.getID());
 	}
 }

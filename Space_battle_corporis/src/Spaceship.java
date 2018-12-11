@@ -19,7 +19,7 @@ public class Spaceship {
 		return owner;
 	}
 	
-	public int speed()
+	public int getSpeed()
 	{
 		return speed;
 	}

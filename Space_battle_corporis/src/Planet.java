@@ -8,8 +8,6 @@ public class Planet
 	private int power;
 	private int productionRate;
 	
-	
-	
 	public int getID()
 	{
 		return id;
@@ -82,16 +80,27 @@ public class Planet
 	
 	public void launch(Planet target)
 	{
+		//Spaceship ship = new Spaceship(this.owner);
+		
+		
 		//gestion du pourcentage
 		int launchRate = 25;
-		Squadron squadron = new Squadron(idMax+1, power*attackRate/100;
-		
+		int shipLaunchedNbr = power*launchRate/100;
+		Squadron squadron = new Squadron(1, 1, shipLaunchedNbr, target.id);
 		this.power = power - shipLaunchedNbr;
-		target.interact(shipLaunchedNbr);
+		
+		/*for(int i = 0; i<shipLaunchedNbr; i++)
+		{
+		target.interact(ship);
+		}*/
 	}
 	
-	public void interact(Squadron squadron)
+	public void interact(Spaceship ship)
 	{
-		this.power = this.power - power;
+		//detecter vaisseau
+		if(this.owner==ship.getOwner())
+			this.power = this.power + ship.getPower();
+		else
+			this.power = this.power - ship.getPower();
 	}
 }
