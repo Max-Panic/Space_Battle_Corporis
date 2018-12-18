@@ -73,6 +73,7 @@ public class Spaceship {
 	{
 		this.owner = owner;
 		this.squadronID = squadronID;
+		//allerVersPlanete
 	}
 	
 	public Spaceship(int owner)
@@ -82,5 +83,6 @@ public class Spaceship {
 		this.productionTime = 5000;
 		this.speed = 5;
 		this.power = 1;
+		//allerVersPlanète
 	}
 }

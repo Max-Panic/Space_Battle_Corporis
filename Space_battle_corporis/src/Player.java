@@ -7,7 +7,7 @@ public class Player {
 
 	private String name;
 	private int id;
-	private List<Planet> planets = new ArrayList<Planet>();;
+	private List<Planet> planetsOwned = new ArrayList<Planet>();
 	
 	public String getName()
 	{
@@ -21,7 +21,7 @@ public class Player {
 	
 	public List<Planet> getPlanets()
 	{
-		return planets;
+		return planetsOwned;
 	}
 	
 	public void setName(String name)
@@ -36,13 +36,13 @@ public class Player {
 	
 	public void setPlanets(List<Planet> planets)
 	{
-		this.planets = planets;
+		this.planetsOwned = planets;
 	}
 	
 	public Player(String name, int id, List<Planet> planets)
 	{
 		this.name = name;
 		this.id = id;
-		this.planets = planets;
+		this.planetsOwned = planets;
 	}
 }

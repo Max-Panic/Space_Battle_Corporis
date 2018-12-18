@@ -55,10 +55,10 @@ public class Squadron {
 		this.target = target;
 	}
 	
-	/*public void setSpaceships(List<Spaceship> spaceships)
+	public void setSpaceships(List<Spaceship> spaceships)
 	{
 		this.spaceships = spaceships;
-	}*/
+	}
 	
 	public Squadron(int id, int owner, int shipNbr, int target)
 	{
