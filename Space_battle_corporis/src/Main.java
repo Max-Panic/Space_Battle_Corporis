@@ -17,11 +17,13 @@ public class Main extends Application{
 	private Group primaryGroup = new Group();
 	private Scene primaryScene;
 	private Game primaryGame;
+	public static int xMax = 1200;
+	public static int yMax = 800;
 	
 	public Main() {
 		super();
 		//Scene scene = new Scene(primaryGroup, 400, 400);
-		this.primaryGame = new Game(0);
+		this.primaryGame = new Game(5);
 		
 	
 		//this.primaryScene = scene;
@@ -38,15 +40,15 @@ public class Main extends Application{
 	public void start(Stage myStage)
 	{ 	
 		
-		Group group = new Group();
 		
 		for(int i = 0; i<primaryGame.getPlanets().size(); i++)
 		{
 			
-		group.getChildren().add(primaryGame.getPlanets().get(i).getShape());
+			System.out.println(primaryGame.getPlanets().get(i).getID() + "Planète " + i);
+			this.primaryGroup.getChildren().add(primaryGame.getPlanets().get(i).getShape());
 		
 		}
-		Scene scene = new Scene(group, 800, 600);
+		Scene scene = new Scene(this.primaryGroup, xMax, yMax);
 		
 		myStage.setScene(scene);
 		

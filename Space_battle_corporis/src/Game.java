@@ -36,17 +36,17 @@ public class Game {
 		planets.clear();
 		this.minDist = 250;
 		
+		for(int i=0; i<1; i++)
+		{
 		Planet p = new Planet(this, 1);
+		}
 		
-		//System.out.println(this.getPlanets().get(0).getPosX() + " HAHA posX");
 		
-		p = new Planet(this, 2);
+		Planet p = new Planet(this, 2);
 		
-		p = new Planet(this, 50, 50);
-		System.out.println(p.isInFrame(800, 600) + " ICI");
+		//Planet p = new Planet(this, 0, 0);
 		for(int i = 0; i<nbPlanets - 2; i++)
 		{
-			System.out.print("ok1");
 			p = new Planet(this);
 		}
 	}

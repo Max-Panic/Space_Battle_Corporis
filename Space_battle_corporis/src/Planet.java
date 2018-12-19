@@ -3,8 +3,19 @@ import java.util.Random;
 import javafx.scene.shape.Rectangle;
 import javafx.application.*;
 import javafx.scene.*;
+import javafx.scene.image.ImageView;
 import javafx.geometry.*;
 import javafx.scene.*;
+import javafx.application.*;
+import java.*;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.stage.*;
+import javafx.scene.*;
+import javafx.scene.shape.*;
+import java.util.Random;
+import javafx.scene.shape.Rectangle;
+import javafx.geometry.*;
 
 
 public class Planet
@@ -18,9 +29,18 @@ public class Planet
 	private int posX; //coordonnées en X du centre de la planète
 	private int posY; //coordonnées en Y du centre de la planète
 	private Rectangle shape;
+	private ImageView img;
 	
 	public Rectangle getShape() {
 		return shape;
+	}
+	
+	public ImageView getImg() {
+		return img;
+	}
+
+	public void setImg(ImageView img) {
+		this.img = img;
 	}
 
 	public void setShape(Rectangle shape) {
@@ -86,8 +106,6 @@ public class Planet
 	
 	public Planet(Game g)
 	{
-		this.id = g.getPlanetIdMax()+1;
-		g.setPlanetIdMax(this.id);
 		this.owner = 0;
 		this.power = 0;
 		this.shape = new Rectangle(0, 0);
@@ -96,25 +114,27 @@ public class Planet
 	
 	public Planet(Game g, int owner)
 	{
+		
 		this.id = g.getPlanetIdMax()+1;
 		this.owner = owner;
 		this.power = 0;
+		this.radius = 50;
 		this.shape = new Rectangle(0, 0);
 		if(id == 1)
 		{
 			Random r = new Random();
-			this.radius = 40 + r.nextInt(90 - 60);
-			while(isInFrame(800, 600) == false)
-			{
-				this.posX = r.nextInt(800);
-				this.posY = r.nextInt(600);
-			}
+			//this.radius = 20 + r.nextInt(60 - 20);
+			//while(isInFrame() == false)
+			//{
+				this.posX = r.nextInt((Main.xMax - 100) - (getRadius()+100) + 1) + (getRadius() + 20);
+				this.posY = r.nextInt((Main.yMax - 100) - (getRadius()+100) + 1) + (getRadius() + 20);
+			//}
 			
-			getShape().setX(getPosX());
-			getShape().setY(getPosY());
-			getShape().setWidth(getRadius()*2);
-			getShape().setHeight(getRadius()*2);
-			
+			this.getShape().setX(getPosX() - radius);
+			this.getShape().setY(getPosY() - radius);
+			this.getShape().setWidth(getRadius()*2);
+			this.getShape().setHeight(getRadius()*2);
+		
 			g.getPlanets().add(this);
 			g.setPlanetIdMax(this.id);
 		}
@@ -150,71 +170,70 @@ public class Planet
 		this.shape = new Rectangle(0, 0);
 		this.posX = posX;
 		this.posY = posY;
-		this.radius = 20;
-		
-		getShape().setX(getPosX());
-		getShape().setY(getPosY());
-		getShape().setWidth(getRadius()*2);
-		getShape().setHeight(getRadius()*2);
-		
-		
+		this.radius = 40;
 		
 		boolean ok = false;
 		for(int i = 0; i<g.getPlanets().size();i++)
 		{
-			//System.out.println(getDistance(g.getPlanets().get(i)) + " spawn DISTANCE");
 		
 			if(this.getDistance(g.getPlanets().get(i)) < g.getMinDist())
 			{
 				ok = false;
-				//System.out.println(ok);
 				break;
 			}
 			ok = true;
-			//System.out.println(ok);
 		}
 		g.getPlanets().add(this);
 		g.setPlanetIdMax(this.id);
-		System.out.println(ok);
+		
+		getShape().setX(getPosX() - radius);
+		getShape().setY(getPosY() - radius);
+		getShape().setWidth(getRadius()*2);
+		getShape().setHeight(getRadius()*2);
+		
 	}
 	
 	public void spawn(Game g)
 	{
 		Random r = new Random();
 		boolean ok = false;
-		
-		this.radius = 40 + r.nextInt(60 - 40);
+		this.radius = 50;
+		this.radius = 20 + r.nextInt(50 - 20);
 		
 		while(ok == false)
 		{
-			
-			this.posX = r.nextInt(800);
-			this.posY = r.nextInt(600);
-			if(isInFrame(800, 600))
+			this.posX = r.nextInt((Main.xMax - 100) - (getRadius()+100) + 1) + (getRadius() + 20);
+			this.posY = r.nextInt((Main.yMax - 100) - (getRadius()+100) + 1) + (getRadius() + 20);
+			/*if(isInFrame(800, 600))
+			{*/
+			if(posX > (radius*2+20) || posX < (Main.xMax - radius*2+20) || posY > (radius*2 + 20) || posY < (Main.yMax - radius*2 +20))
 			{
 				for(int i = 0; i<g.getPlanets().size();i++)
 				{
-					//System.out.println(getDistance(g.getPlanets().get(i)) + " spawn DISTANCE");
+					
 				
 					if(this.getDistance(g.getPlanets().get(i)) < g.getMinDist())
 					{
 						ok = false;
-						//System.out.println(ok);
 						break;
 					}
 					ok = true;
-					//System.out.println(ok);
 				}
+				
 			}
+			else
+			ok = false;
 		}
-		getShape().setX(getPosX());
-		getShape().setY(getPosY());
+
+		getShape().setX(getPosX() + radius);
+		getShape().setY(getPosY() + radius);
 		getShape().setWidth(getRadius()*2);
 		getShape().setHeight(getRadius()*2);		
 		
 		this.productionRate = 1;
 				
 				//1 + r.nextInt(4);
+		this.id = g.getPlanetIdMax()+1;
 		g.getPlanets().add(this);
 		g.setPlanetIdMax(this.id);
 		
@@ -230,24 +249,22 @@ public class Planet
 		 return Math.sqrt(sqr(y2 - y1) + sqr(x2 - x1));
 	}
 	
-	public boolean isInFrame(double xMax, double yMax)  
+	/*public boolean isInFrame()  
 	{
 		boolean inFrame = false;
 		System.out.println(radius + " " + id + " " + posY + " " + posY);
-		if(posY > radius+10 && posY < yMax-(radius+10))
+		if(posY > radius+40 && posY < Main.yMax-(radius+40))
 		{ 
-			if(posX > radius + 10 && posX < xMax-(radius+10))
+			if(posX > radius + 40 && posX < Main.xMax-(radius+40))
 			{ 	
-				System.out.println(radius + " " + id + " " + posY + " " + posY);
+				System.out.println(radius + " " + id + " " + posX + " " + posY);
 				inFrame = true;
 				return inFrame;
 			}
 			else return inFrame;
 		} 
 		else return inFrame;
-		
-
-	}
+	}*/
 
 	
 	public double sqr(double d)
