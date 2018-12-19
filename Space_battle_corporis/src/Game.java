@@ -1,6 +1,9 @@
 import javafx.application.*;
 import javafx.stage.*;
 import javafx.scene.*;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 
 import java.*;
 import java.util.ArrayList;
@@ -13,6 +16,9 @@ public class Game {
 	private int squadronIdMax;
 	private int planetIdMax;
 	private int minDist;
+	private Image imgBackground = new Image("space.jpg");
+	private ImagePattern imagePattern = new ImagePattern(imgBackground);
+	private Rectangle background = new Rectangle();
 	
 	public int getMinDist() {
 		return minDist;
@@ -36,6 +42,12 @@ public class Game {
 		planets.clear();
 		this.minDist = 250;
 		
+		getBackground().setX(0);
+		getBackground().setY(0);
+		getBackground().setWidth(Main.xMax);
+		getBackground().setHeight(Main.yMax);
+		getBackground().setFill(imagePattern);
+		
 		for(int i=0; i<1; i++)
 		{
 		Planet p = new Planet(this, 1);
@@ -51,6 +63,30 @@ public class Game {
 		}
 	}
 	
+	public Image getImgBackground() {
+		return imgBackground;
+	}
+
+	public void setImgBackground(Image imgBackground) {
+		this.imgBackground = imgBackground;
+	}
+
+	public ImagePattern getImagePattern() {
+		return imagePattern;
+	}
+
+	public void setImagePattern(ImagePattern imagePattern) {
+		this.imagePattern = imagePattern;
+	}
+
+	public Rectangle getBackground() {
+		return background;
+	}
+
+	public void setBackground(Rectangle background) {
+		this.background = background;
+	}
+
 	public List<Planet> getPlanets() {
 		return planets;
 	}

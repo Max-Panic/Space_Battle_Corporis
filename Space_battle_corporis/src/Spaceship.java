@@ -1,5 +1,4 @@
-
-
+import javafx.scene.image.ImageView;
 
 public class Spaceship {
 
@@ -8,6 +7,7 @@ public class Spaceship {
 	private int productionTime;
 	private int power;
 	private int squadronID;
+	private ImageView image;
 	
 	/*public int getID()
 	{
@@ -19,6 +19,14 @@ public class Spaceship {
 		return owner;
 	}
 	
+	public ImageView getImage() {
+		return image;
+	}
+
+	public void setImage(ImageView image) {
+		this.image = image;
+	}
+
 	public int getSpeed()
 	{
 		return speed;
@@ -74,6 +82,11 @@ public class Spaceship {
 		this.owner = owner;
 		this.squadronID = squadronID;
 		//allerVersPlanete
+	}
+	
+	public void spawn(Planet p)
+	{
+		
 	}
 	
 	public Spaceship(int owner)
