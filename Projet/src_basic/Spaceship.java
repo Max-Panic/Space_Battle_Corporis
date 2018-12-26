@@ -261,7 +261,6 @@ public void setTrajectory(Planet target, Game g) {
 		double VecX = -(dest.getY() - src.getY());
 		double VecY = (dest.getX() - src.getX());
 		
-		
 		double norm = Math.sqrt(VecX*VecX + VecY*VecY);
 		VecX = VecX/norm;										//normalisation du vecteur
 		VecY = VecY/norm;				
@@ -276,8 +275,8 @@ public void setTrajectory(Planet target, Game g) {
 		{
 			return point;
 		}
-		
 	}
+	
 	/**
 	 * Check if a shape intersects another shape
 	 * @param shape1 The first shape

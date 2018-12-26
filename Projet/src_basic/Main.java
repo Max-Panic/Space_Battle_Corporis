@@ -1,10 +1,16 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import java.*;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.stage.*;
+import javafx.util.Duration;
 import javafx.scene.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
@@ -79,12 +85,32 @@ public class Main extends Application{
 	{ 		
 		startGame(myStage);
 		int winner = 0;
-		while(winner == 1)
-		{
-			if(this.primaryGame.getPlanets().isEmpty() == false)
+	
+		Timeline gameLoop = new Timeline();
+        gameLoop.setCycleCount( Timeline.INDEFINITE );
+        
+        final long timeStart = System.currentTimeMillis();
+        
+        KeyFrame kf = new KeyFrame(
+            Duration.seconds(0.017),                // 60 FPS
+            new EventHandler<ActionEvent>()
+            {
+                public void handle(ActionEvent ae)
+                {
+                    double t = (System.currentTimeMillis() - timeStart) / 1000.0; 
+ 
+                }
+            });
+        
+        gameLoop.getKeyFrames().add( kf );
+        gameLoop.play();
+        
+        this.setMyStage(myStage);
+		myStage.show();
+			/*if(this.primaryGame.getPlanets().isEmpty() == false)
 			{
 			}
-		}
+		}*/
 		
 	}
 		
@@ -154,8 +180,9 @@ public class Main extends Application{
 		}
 		
 		s.setScene(primaryScene);
+		this.setMyStage(s);
+		myStage.show();
 		
-		s.show();
 	}
 	
 	public void onClickedPlanet(Planet p)
@@ -185,8 +212,6 @@ public class Main extends Application{
 		Main game = new Main();
 		game.launch(args);
 		
-		
-		
 	}
 	
 	public Planet getPlanetFromCircle(Circle c)
@@ -200,13 +225,11 @@ public class Main extends Application{
 	{
 		int p = 0;
 		for(int i = 0; i<primaryGame.getPlanets().size(); i++)
-		{
-			if(c.getCenterX()==primaryGame.getPlanets().get(i).getPosX() && c.getCenterY()==primaryGame.getPlanets().get(i).getPosY())
+		{	
+			if(c.getCenterX()==primaryGame.getPlanets().get(i).getPosX() && c.getCenterY() == primaryGame.getPlanets().get(i).getPosY())
 			{
 				p = primaryGame.getPlanets().get(i).getId();
 				break;
-				
-				
 			}
 		}
 		return p;

@@ -1,11 +1,15 @@
 import java.util.Random;
 
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.animation.PathTransition;
 import javafx.application.*;
 import javafx.scene.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.geometry.*;
 import javafx.scene.*;
@@ -80,6 +84,11 @@ public class Planet
 	 */
 	private List<Spaceship> spaceships = new ArrayList<Spaceship>(); //tableau contenant les vaisseaux ayant d�coll� de la plan�te, ce sera dans le futur g�r� par un escadron
 	/**
+	 * A text used to display the planet's power in its center
+	 */
+	private Text powerTxt = new Text(String.valueOf(this.power));
+	
+	/**
 	 * Create a new instance of Planet, this planet does not spawn and is neutral
 	 * @return An instance of Planet
 	 */
@@ -119,15 +128,19 @@ public class Planet
 			
 			this.posX = r.nextInt((Main.xMax - 100) - (getRadius()+20)) + (getRadius() + 20);	//G�n�ration d'un entier al�atoire dans l'intervalle [rayonPlan�te+20; TailleFen�treX - 100] pour la position X du centre de la plan�te
 			this.posY = r.nextInt((Main.yMax - 100) - (getRadius()+20)) + (getRadius() + 20);	//-------------------------------------------------------------------; TailleFen�treY - 100]----------------- Y -----------------------
-			
+	
 			this.getShape().setCenterX(getPosX());	//
 			this.getShape().setCenterY(getPosY());	//D�finition de la taille, de la position
 			this.getShape().setRadius(getRadius());	//et de l'image de la plan�te 
 			this.getShape().setFill(imagePattern);	//
-		
+			this.getPowerTxt().setBoundsType(TextBoundsType.VISUAL);
+			this.getPowerTxt().setText(String.valueOf(this.power));
+			//this.getPowerTxt().setX(getPosX - getPowerTxt().get)
+			
 			/*this.getHitZone().setCenterX(getPosX());	
 			this.getHitZone().setCenterY(getPosY());	
 			this.getHitZone().setRadius(getRadius() + 20);*/
+			
 			
 			this.id = g.getPlanetIdMax()+1;			//Assignation de l'ID de la plan�te � la valeur max des ID des plan�tes pr�sente dans la partie incr�ment�e de 1
 			g.getPlanets().add(this);				//Ajout de la plan�te au tableau des plan�tes de la partie -> ajout r�el de la plan�te au jeu
@@ -217,7 +230,9 @@ public class Planet
 		this.getShape().setCenterY(getPosY());	//D�finition de la taille, de la position	
 		this.getShape().setRadius(getRadius());	//et de l'image de la plan�te 
 		this.getShape().setFill(imagePattern);	//
-		
+		this.getPowerTxt().setBoundsType(TextBoundsType.VISUAL);
+		this.getPowerTxt().setText(String.valueOf(this.power));
+
 		
 		this.productionRate = 1;
 		
@@ -309,10 +324,11 @@ public class Planet
 	public void interact(Spaceship ship) 
 	{
 		if(this.owner==ship.getOwner())
-			this.power = this.power +  1;
+			this.power = this.power + 1;
 		else
 			this.power = this.power - ship.getPower();
 	}
+	
 	/**
 	 * Change the planet appearance with the given image path
 	 * @param s Path to the new image
@@ -323,6 +339,13 @@ public class Planet
 		this.imagePattern = new ImagePattern(image);
 		this.getShape().setFill(imagePattern);
 	}
+	
+/*	public void setNewPlanetPower()
+	{
+		this.getStack().getChildren().remove(this.getPowerTxt());
+		this.getPowerTxt().setText(String.valueOf(this.getPower()));
+		this.getStack().getChildren().add(this.getPowerTxt());
+	}*/
 	
 	public int getId() {
 		return id;
@@ -360,6 +383,7 @@ public class Planet
 	public void setPower(int power)
 	{
 		this.power = power;
+		
 	}
 	
 	public int getProductionRate()
@@ -424,6 +448,12 @@ public class Planet
 	}
 	public void setHitZone(Circle hitZone) {
 		this.hitZone = hitZone;
+	}
+	public Text getPowerTxt() {
+		return powerTxt;
+	}
+	public void setPowerTxt(Text powerTxt) {
+		this.powerTxt = powerTxt;
 	}
 
 	/*public Circle getPathHitbox() {
