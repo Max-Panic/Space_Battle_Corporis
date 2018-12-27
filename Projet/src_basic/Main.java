@@ -44,11 +44,11 @@ public class Main extends Application{
 	/**
 	 * The x size of the frame
 	 */
-	public static int xMax = 1300;
+	public static int xMax = 800;
 	/**
 	 * The y size of the frame
 	 */
-	public static int yMax = 850;
+	public static int yMax = 600;
 	/**
 	 * The percentage of launched ships text node
 	 */
@@ -97,6 +97,7 @@ public class Main extends Application{
             Duration.seconds(0.017),                // 60 FPS
             new EventHandler<ActionEvent>()
             {
+            	int cpt = 0;
                 public void handle(ActionEvent ae)
                 {
                     double t = (System.currentTimeMillis() - timeStart) / 1000.0; 
@@ -125,6 +126,14 @@ public class Main extends Application{
                             getPrimaryGroup().getChildren().add(primaryGame.getMain().getEndScreen());
                         }
                     }
+	                if (!(cpt == 0))
+	                    for(int k = 0; k<primaryGame.getPlanets().size(); k++)
+	                    {
+	                    	if (cpt%(Spaceship.productionTime*60)==0) {
+	                    		primaryGame.getPlanets().get(k).produceShips(getPrimaryGame());
+	                    	}
+	                    }
+                cpt++;
                 }
             });
         
@@ -182,7 +191,7 @@ public class Main extends Application{
 		
 		for(int i = 0; i<primaryGame.getPlanets().size(); i++)
 		{
-			this.primaryGroup.getChildren().add(primaryGame.getPlanets().get(i).getShape());
+			this.primaryGroup.getChildren().addAll(primaryGame.getPlanets().get(i).getShape(),primaryGame.getPlanets().get(i).getPowerTxt());
 			this.primaryGame.getPlanets().get(i).getShape().setOnMouseClicked(e -> 
 			{
 				Planet p1 = getPlanetFromCircle((Circle) e.getSource());

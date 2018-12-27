@@ -125,7 +125,7 @@ public class Planet
 		if(g.getPlanets().isEmpty())  //Test du nombre de plan�tes pr�sentes dans la partie pour voir si le test de la position relative aux autres plan�tes est n�cessaire
 		{
 			
-			this.productionRate = 1; //assignation provisoire du taux de production de la plan�te � 1
+			this.productionRate = 5; //assignation provisoire du taux de production de la plan�te � 1
 			
 			this.posX = r.nextInt((Main.xMax - 100) - (getRadius()+20)) + (getRadius()+20);	//G�n�ration d'un entier al�atoire dans l'intervalle [rayonPlan�te+20; TailleFen�treX - 100] pour la position X du centre de la plan�te
 			this.posY = r.nextInt((Main.yMax - 100) - (getRadius()+20)) + (getRadius()+20);	//-------------------------------------------------------------------; TailleFen�treY - 100]----------------- Y -----------------------
@@ -136,6 +136,8 @@ public class Planet
 			this.getShape().setFill(imagePattern);	//
 			this.getPowerTxt().setBoundsType(TextBoundsType.VISUAL);
 			this.getPowerTxt().setText(String.valueOf(this.power));
+			this.getPowerTxt().setX(this.getPosX() - this.getPowerTxt().getBoundsInLocal().getWidth()/2);
+			this.getPowerTxt().setY(this.getPosY() + this.getPowerTxt().getBoundsInLocal().getHeight()/2);
 			//this.getPowerTxt().setX(getPosX - getPowerTxt().get)
 			
 			/*this.getHitZone().setCenterX(getPosX());	
@@ -236,9 +238,10 @@ public class Planet
 		this.getShape().setFill(imagePattern);	//
 		this.getPowerTxt().setBoundsType(TextBoundsType.VISUAL);
 		this.getPowerTxt().setText(String.valueOf(this.power));
-
+		this.getPowerTxt().setX(this.getPosX() - this.getPowerTxt().getBoundsInLocal().getWidth()/2);
+		this.getPowerTxt().setY(this.getPosY() + this.getPowerTxt().getBoundsInLocal().getHeight()/2);
 		
-		this.productionRate = 1;
+		this.productionRate = 5;
 		
 		/*this.getHitZone().setCenterX(getPosX());	
 		this.getHitZone().setCenterY(getPosY());	
@@ -288,18 +291,18 @@ public class Planet
 	 * A method that produce ships for this planet, not implemented yet
 	 * @param g The game the planet belongs to
 	 */
-	/*public void produceShips(Game g) 
+	
+	public void produceShips(Game g) 
 	{
 		
-		Spaceship ship = new Spaceship(g, this);
-		
-		/*try {
-			Thread.sleep(ship.getProductionTime());
+		try {
+			Thread.sleep(Spaceship.productionTime);
 		} catch (InterruptedException e) {
 			System.out.println("erreur");
 		}
 		this.power = this.power + this.productionRate; //<- prise en compte du taux de production de la plan�te pour le nombre de vaisseaux produits
-	}*/
+		updatePower(g);
+	}
 	
 	/**
 	 * A method that allow this planet to attack the given target by launching ships at it
@@ -323,6 +326,20 @@ public class Planet
 			}
 		}
 	}
+	
+	/*
+	 * 
+	 */
+	
+	public void updatePower(Game g)
+	{
+		g.getMain().getPrimaryGroup().getChildren().remove(this.getPowerTxt());
+		this.getPowerTxt().setText(String.valueOf(this.getPower()));
+		this.getPowerTxt().setX(this.getPosX() - this.getPowerTxt().getBoundsInLocal().getWidth()/2);
+		this.getPowerTxt().setY(this.getPosY() + this.getPowerTxt().getBoundsInLocal().getHeight()/2);
+		g.getMain().getPrimaryGroup().getChildren().add(this.getPowerTxt());
+	}
+	
 	/**
 	 * A function that allow the planet to interact with the given ship, not implemented yet
 	 * 
@@ -332,10 +349,14 @@ public class Planet
     {
 		  System.out.println(power);
 	        if(this.owner==ship.getOwner())
+	        {
 	            this.power = this.power + 1; 
+	        	updatePower(g);
+	        }
 	        else
 	        {
 	            this.power = this.power - ship.getPower();    
+	            updatePower(g);
 	            if(this.power<=0)
 	            {
 	            	if(this.getOwner()>0)

@@ -58,11 +58,11 @@ public class Spaceship {
 	/**
 	 * The time the ship takes to produce
 	 */
-	private int productionTime;
+	public static int productionTime = 5;
 	/**
 	 * The attack power of the ship
 	 */
-	private int power;
+	public static int power = 5;
 	/**
 	 * The ID of the squadron the ship belongs to
 	 */
@@ -105,8 +105,6 @@ public class Spaceship {
 	{
 		this.owner = p.getOwner();
 		this.squadronID = s.getID();
-		this.productionTime = 1;
-		this.power = 5;
 		this.target = s.getTarget();
 		
 		spawn(g, p, s);
