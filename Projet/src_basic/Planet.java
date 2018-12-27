@@ -47,7 +47,7 @@ public class Planet
 	/**
 	 * The number of ships stored in this planet 
 	 */
-	private int power = 100; 
+	private int power = 20; 
 	/**
 	 * The number of ship that this planet produce for each production cycle
 	 */
@@ -82,7 +82,7 @@ public class Planet
 	 * A list that contains the spaceships launched from this planet
 	 * @see Spaceship
 	 */
-	private List<Spaceship> spaceships = new ArrayList<Spaceship>(); //tableau contenant les vaisseaux ayant d�coll� de la plan�te, ce sera dans le futur g�r� par un escadron
+	//private List<Spaceship> spaceships = new ArrayList<Spaceship>(); //tableau contenant les vaisseaux ayant d�coll� de la plan�te, ce sera dans le futur g�r� par un escadron
 	/**
 	 * A text used to display the planet's power in its center
 	 */
@@ -117,17 +117,18 @@ public class Planet
 	{
 		Random r = new Random(); //instanciation d'un objet "Random" pour la g�n�ration de nombres al�atoires
 		this.owner = owner;
-		this.image = new Image("space.jpg");
+		this.image = new Image("Green.jpg");
 		this.imagePattern = new ImagePattern(image);
 		this.radius = 20 + r.nextInt(30 - 20);	//G�n�ration d'un entier al�atoire dans l'intervalle [50; 80] pour le rayon de la plan�te
-		
+		g.getPlayers().add(new Player(g, owner));
 		
 		if(g.getPlanets().isEmpty())  //Test du nombre de plan�tes pr�sentes dans la partie pour voir si le test de la position relative aux autres plan�tes est n�cessaire
 		{
+			
 			this.productionRate = 1; //assignation provisoire du taux de production de la plan�te � 1
 			
-			this.posX = r.nextInt((Main.xMax - 100) - (getRadius()+20)) + (getRadius() + 20);	//G�n�ration d'un entier al�atoire dans l'intervalle [rayonPlan�te+20; TailleFen�treX - 100] pour la position X du centre de la plan�te
-			this.posY = r.nextInt((Main.yMax - 100) - (getRadius()+20)) + (getRadius() + 20);	//-------------------------------------------------------------------; TailleFen�treY - 100]----------------- Y -----------------------
+			this.posX = r.nextInt((Main.xMax - 100) - (getRadius()+20)) + (getRadius()+20);	//G�n�ration d'un entier al�atoire dans l'intervalle [rayonPlan�te+20; TailleFen�treX - 100] pour la position X du centre de la plan�te
+			this.posY = r.nextInt((Main.yMax - 100) - (getRadius()+20)) + (getRadius()+20);	//-------------------------------------------------------------------; TailleFen�treY - 100]----------------- Y -----------------------
 	
 			this.getShape().setCenterX(getPosX());	//
 			this.getShape().setCenterY(getPosY());	//D�finition de la taille, de la position
@@ -151,7 +152,6 @@ public class Planet
 		{
 			this.spawn(g);
 		}	
-		
 	}
 	
 	/**
@@ -200,8 +200,12 @@ public class Planet
 	public void spawn(Game g) 
 	{
 		Random r = new Random();
+		if(getOwner()==0)
+		this.image = new Image("white.jpg");
+		else this.image = new Image("red.jpg");
 		this.imagePattern = new ImagePattern(image);
 		boolean ok = false;
+		this.power = 100;
 		this.radius = 50 + r.nextInt(80 - 50);
 		
 		while(ok == false) //Boucle de v�rification de la position de la plan�te par rapport aux bords de la fen�tre et aux autres plan�tes
@@ -241,7 +245,10 @@ public class Planet
 		this.getHitZone().setRadius(getRadius() + 20);*/
 		
 		this.id = g.getPlanetIdMax()+1;	//Assignation de l'ID de la plan�te � la valeur max des ID des plan�tes pr�sente dans la partie incr�ment�e de 1
-		g.getPlanets().add(this);		//Ajout de la plan�te au tableau des plan�tes de la partie -> ajout r�el de la plan�te au jeu
+		g.getPlanets().add(this);
+		if(owner>0)
+		g.getPlayers().get(owner-1).getPlanetsOwned().add(this);
+		
 		g.setPlanetIdMax(this.id);		//Incr�mentation de la valeur de l'id maximale des plan�tes dans la partie
 		
 	}
@@ -281,7 +288,7 @@ public class Planet
 	 * A method that produce ships for this planet, not implemented yet
 	 * @param g The game the planet belongs to
 	 */
-	public void produceShips(Game g) 
+	/*public void produceShips(Game g) 
 	{
 		
 		Spaceship ship = new Spaceship(g, this);
@@ -291,8 +298,8 @@ public class Planet
 		} catch (InterruptedException e) {
 			System.out.println("erreur");
 		}
-		this.power = this.power + this.productionRate; //<- prise en compte du taux de production de la plan�te pour le nombre de vaisseaux produits*/
-	}
+		this.power = this.power + this.productionRate; //<- prise en compte du taux de production de la plan�te pour le nombre de vaisseaux produits
+	}*/
 	
 	/**
 	 * A method that allow this planet to attack the given target by launching ships at it
@@ -302,32 +309,68 @@ public class Planet
 	public void launch(Game g, Planet target, Player player)	
 	{
 		
-		int launchRate = player.getShipRate(); //Taux de vaisseau lances, ici fixes a 5 en attendant les controles clavier/souris
+		int launchRate = player.getShipRate(); 
 		int shipLaunchedNbr = power*launchRate/100;
-		//Squadron squadron = new Squadron(1, 1, shipLaunchedNbr, target.id); <- cr�ation d'un escadron contenant les vaisseaux lanc�s � impl�menter
-		power = power - shipLaunchedNbr; 
+		Squadron squadron = new Squadron(this.owner, target, g);
+		setPower(power - shipLaunchedNbr); 
 		
-		for(int i = 0; i<shipLaunchedNbr; i++) //apparition d'un vaisseau pour chaque vaisseau lanc�, gestion des vagues de lancement � impl�menter ici
+		for(int i = 0; i<=shipLaunchedNbr; i++) //apparition d'un vaisseau pour chaque vaisseau lanc�, gestion des vagues de lancement � impl�menter ici
 		{
-		
-			Spaceship s = new Spaceship(g, this); 
-			s.goTo(target, g); 
+			if(i>0)
+			{
+			Spaceship s = new Spaceship(g, this, squadron); 
+			s.goTo(g); 
+			}
 		}
-		
-		
 	}
 	/**
 	 * A function that allow the planet to interact with the given ship, not implemented yet
 	 * 
 	 * @param ship The ship which just crashed on the planet 
 	 */
-	public void interact(Spaceship ship) 
-	{
-		if(this.owner==ship.getOwner())
-			this.power = this.power + 1;
-		else
-			this.power = this.power - ship.getPower();
-	}
+	public void interact(Spaceship ship, Game g) 
+    {
+		  System.out.println(power);
+	        if(this.owner==ship.getOwner())
+	            this.power = this.power + 1; 
+	        else
+	        {
+	            this.power = this.power - ship.getPower();    
+	            if(this.power<=0)
+	            {
+	            	if(this.getOwner()>0)
+	            	{
+	            		for(int i = 1; i<g.getPlayers().size(); i++)
+	            		{
+	            			if(g.getPlayers().get(i).getId() == this.getOwner())
+	            			{
+	            				g.getPlayers().get(i).getPlanetsOwned().remove(this);
+	         	            	g.getPlayers().remove(i);
+	            			}
+	            		}
+	            	}
+		            this.owner = ship.getOwner(); 
+		            for(int i = 1; i<g.getPlayers().size(); i++)
+            		{
+            			if(g.getPlayers().get(i).getId() == this.getOwner())
+            			{
+            				g.getPlayers().get(owner-1).getPlanetsOwned().add(this);
+            			}
+            		}
+		            
+		            if(this.owner == 1)
+		            {
+		            	this.setNewImage("Green.jpg");
+		            }
+		            else
+		            {
+		            	this.setNewImage("red.jpg");
+		            }
+	            	
+	            } 
+	        }    
+    }
+	
 	
 	/**
 	 * Change the planet appearance with the given image path
@@ -436,13 +479,6 @@ public class Planet
 		this.shape = shape;
 	}
 	
-	public List<Spaceship> getSpaceships() {
-		return spaceships;
-	}
-	
-	public void setSpaceships(List<Spaceship> spaceships) {
-		this.spaceships = spaceships;
-	}
 	public Circle getHitZone() {
 		return hitZone;
 	}

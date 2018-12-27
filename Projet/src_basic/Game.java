@@ -33,6 +33,14 @@ public class Game
 	 */
 	private List<Planet> planets = new ArrayList<Planet>();
 	/**
+	 * The list of the players present in the game
+	 */
+	private List<Player> players = new ArrayList<Player>();
+	/**
+	 * The list of the squadrons present in the game
+	 */
+	private List<Squadron> squadrons = new ArrayList<Squadron>();
+	/**
 	 * The squadron's max ID, not implemented yet
 	 * @see Squadron
 	 */
@@ -68,8 +76,6 @@ public class Game
 	 * @see shape
 	 */
 	private ImagePattern imagePattern;
-		//Forme g�om�trique servant � ins�rer le fond de la partie
-	//Forme g�om�trique servant � ins�rer le bouton de d�marrage de la partie
 
 	/**
 	 * Create a new Game in the given main, launch the game on the menu (not implemented yet)
@@ -127,7 +133,7 @@ public class Game
 		main.getPrimaryGroup().getChildren().add(background);		//
 				
 		Planet p = new Planet(this, 1);
-		//Planet target = new Planet(this, 2);	
+		Planet target = new Planet(this, 2);	
 	
 		
 		for(int i = 0; i<nbPlanets - 2; i++)
@@ -210,6 +216,30 @@ public class Game
 
 	public void setStartButton(Rectangle startButton) {
 		this.startButton = startButton;
+	}
+
+	public List<Player> getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(List<Player> players) {
+		this.players = players;
+	}
+
+	public Image getImgStartButton() {
+		return imgStartButton;
+	}
+
+	public void setImgStartButton(Image imgStartButton) {
+		this.imgStartButton = imgStartButton;
+	}
+
+	public List<Squadron> getSquadrons() {
+		return squadrons;
+	}
+
+	public void setSquadrons(List<Squadron> squadrons) {
+		this.squadrons = squadrons;
 	}
 	
 }

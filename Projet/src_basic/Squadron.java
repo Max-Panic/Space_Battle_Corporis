@@ -8,34 +8,24 @@ public class Squadron {
 
 	private int id;
 	private int owner;
-	private int shipNbr;
-	private int target;
+	private Planet target;
 	private List<Spaceship> spaceships = new ArrayList<Spaceship>();
 	
 
 	
-	public Squadron(int id, int owner, int shipNbr, int target)
+	public Squadron(int owner, Planet target, Game g)
 	{
-		this.id = id;
+		this.id = g.getSquadronIdMax()+1;
+		g.setSquadronIdMax(this.id);
 		this.owner = owner;
-		this.shipNbr = shipNbr;
 		this.target = target;
-		//this.spaceships = null;
-	}
-	public Squadron(int id, int owner, int shipNbr, int target, List<Spaceship> spaceships)
-	{
-		this.id = id;
-		this.owner = owner;
-		this.shipNbr = shipNbr;
-		this.target = target;
-		//this.spaceships = spaceships;
-	
+		g.getSquadrons().add(this);
 	}
 	
 	public void changeTarget(Planet target)
 	{
 		//r�cup�rer la demande
-		setTarget(target.getId());
+		setTarget(target);
 	}
 	
 	public int getOwner()
@@ -48,12 +38,7 @@ public class Squadron {
 		return id;
 	}
 	
-	public int getShipNbr()
-	{
-		return shipNbr;
-	}
-	
-	public int getTarget()
+	public Planet getTarget()
 	{
 		return target;
 	}
@@ -73,12 +58,7 @@ public class Squadron {
 		this.id = id;
 	}
 	
-	public void setShipNbr(int shipNbr)
-	{
-		this.shipNbr = shipNbr;
-	}
-	
-	public void setTarget(int target)
+	public void setTarget(Planet target)
 	{
 		this.target = target;
 	}

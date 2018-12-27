@@ -7,7 +7,6 @@ import java.util.List;
  */
 public class Player {
 
-	private String name;
 	private int id;
 	private List<Planet> planetsOwned = new ArrayList<Planet>();
 	/**
@@ -15,9 +14,8 @@ public class Player {
 	 */
 	private int shipRate;
 	
-	public Player(int ID)
+	public Player(Game g, int ID)
 	{
-		this.name = "Player1";
 		this.id = ID;
 		this.shipRate = 15;
 	}
@@ -36,43 +34,7 @@ public class Player {
 	public void setPlanetsOwned(List<Planet> planetsOwned) {
 		this.planetsOwned = planetsOwned;
 	}
-
-	public Player(String name, int id, List<Planet> planets)
-	{
-		this.name = name;
-		this.id = id;
-		this.planetsOwned = planets;
-	}
 	
-	public String getName()
-	{
-		return name;
-	}
-	
-	public int getID()
-	{
-		return id;
-	}
-	
-	public List<Planet> getPlanets()
-	{
-		return planetsOwned;
-	}
-	
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-	
-	public void setID(int id)
-	{
-		this.id = id;
-	}
-	
-	public void setPlanets(List<Planet> planets)
-	{
-		this.planetsOwned = planets;
-	}
 	public int getShipRate() {
 		return shipRate;
 	}

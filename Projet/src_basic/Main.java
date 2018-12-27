@@ -50,9 +50,13 @@ public class Main extends Application{
 	 */
 	public static int yMax = 850;
 	/**
-	 * the percentage of launched ships text node
+	 * The percentage of launched ships text node
 	 */
 	public Text shipRateP1;
+	/**
+	 * The end display
+	 */
+	public Text endScreen;
 	
 	/**
 	 * Create a new instance of main and a new instance of game
@@ -66,9 +70,7 @@ public class Main extends Application{
 		//Scene scene = new Scene(primaryGroup, 400, 400);
 		if(screen == 0)
 		{
-			this.primaryGame = new Game(this, 8);
-			
-			
+			this.primaryGame = new Game(this, 4);
 		}
 		if(screen == 1)
 		{
@@ -98,7 +100,31 @@ public class Main extends Application{
                 public void handle(ActionEvent ae)
                 {
                     double t = (System.currentTimeMillis() - timeStart) / 1000.0; 
- 
+                    for(int i = 0; i<primaryGame.getSquadrons().size(); i++)
+                    {
+                        for (int j = 0; j<primaryGame.getSquadrons().get(i).getSpaceships().size(); j++)
+                        {	
+                            if (primaryGame.getSquadrons().get(i).getSpaceships().get(j).interactifcollide(primaryGame.getSquadrons().get(i).getSpaceships().get(j).getTarget(),primaryGame))
+                            {
+                                getPrimaryGroup().getChildren().remove(primaryGame.getSquadrons().get(i).getSpaceships().get(j).getShape());
+                                primaryGame.getSquadrons().get(i).getSpaceships().remove(primaryGame.getSquadrons().get(i).getSpaceships().get(j));
+
+                            }
+                        }
+                    }
+                    if (primaryGame.getPlayers().size()==1 )
+                    {
+                        if (primaryGame.getPlayers().get(0).getId() == 1) 
+                        {
+                            primaryGame.getMain().setEndScreen(new Text(10, 40, "Victory"));
+                            getPrimaryGroup().getChildren().add(primaryGame.getMain().getEndScreen());
+                        }
+                        else
+                        {
+                            primaryGame.getMain().setEndScreen(new Text(10, 40, "Defeat"));
+                            getPrimaryGroup().getChildren().add(primaryGame.getMain().getEndScreen());
+                        }
+                    }
                 }
             });
         
@@ -122,14 +148,13 @@ public class Main extends Application{
 	{
 		this.primaryScene = new Scene(this.primaryGroup, xMax, yMax);
 		
-		Player player1 = new Player(1);
 		this.primaryGame.getStartButton().setOnMouseClicked(e -> 
 		{
 			System.out.println("click");
 			this.primaryGame = new Game(this, 4);
 		});
 		
-		this.shipRateP1 = new Text(10, 20, String.valueOf(player1.getShipRate()));
+		this.shipRateP1 = new Text(10, 20, String.valueOf(primaryGame.getPlayers().get(0).getShipRate()));
 		getPrimaryGroup().getChildren().add(shipRateP1);
 		
 		primaryScene.setOnScroll(scroll ->
@@ -138,20 +163,20 @@ public class Main extends Application{
 			double deltaY = scroll.getDeltaY();
 			if(deltaY > 0)
 			{
-				if(player1.getShipRate() < 100)
+				if(primaryGame.getPlayers().get(0).getShipRate() < 100)
 				{
-					player1.setShipRate(player1.getShipRate()+5);
+					primaryGame.getPlayers().get(0).setShipRate(primaryGame.getPlayers().get(0).getShipRate()+5);
 				}
 			}
 			else
 			{
-				if(player1.getShipRate() > 0)
+				if(primaryGame.getPlayers().get(0).getShipRate() > 0)
 				{
-					player1.setShipRate(player1.getShipRate()-5);
+					primaryGame.getPlayers().get(0).setShipRate(primaryGame.getPlayers().get(0).getShipRate()-5);
 				}
 			}
 			getPrimaryGroup().getChildren().remove(shipRateP1);
-			this.shipRateP1 = new Text(10, 20, String.valueOf(player1.getShipRate()));
+			this.shipRateP1 = new Text(10, 20, String.valueOf(primaryGame.getPlayers().get(0).getShipRate()));
 			getPrimaryGroup().getChildren().add(shipRateP1);
 		});
 		
@@ -161,7 +186,7 @@ public class Main extends Application{
 			this.primaryGame.getPlanets().get(i).getShape().setOnMouseClicked(e -> 
 			{
 				Planet p1 = getPlanetFromCircle((Circle) e.getSource());
-				onClickedPlanet(p1);
+				//onClickedPlanet(p1);
 				for(int j = 0; j<primaryGame.getPlanets().size(); j++)
 				{
 					if(primaryGame.getPlanets().get(j) != p1)
@@ -169,7 +194,7 @@ public class Main extends Application{
 						primaryGame.getPlanets().get(j).getShape().setOnMouseClicked(f -> 
 						{
 							Planet p2 = getPlanetFromCircle((Circle) f.getSource());
-							p1.launch(primaryGame, p2, player1);
+							p1.launch(primaryGame, p2, primaryGame.getPlayers().get(0));
 						});
 						
 					}
@@ -185,7 +210,7 @@ public class Main extends Application{
 		
 	}
 	
-	public void onClickedPlanet(Planet p)
+	/*public void onClickedPlanet(Planet p)
 	{
 		for(int i = 0; i<this.primaryGame.getPlanets().size();i++)
 		{
@@ -202,7 +227,7 @@ public class Main extends Application{
 				
 			}
 		}
-	}
+	}*/
 	/**
 	 * The main of the application, it create a new Main and call the start method
 	 * @param args Argument array, no arguments needed for the moment
@@ -322,5 +347,13 @@ public class Main extends Application{
 
 	public static void setScreen(int screen) {
 		Main.screen = screen;
+	}
+
+	public Text getEndScreen() {
+		return endScreen;
+	}
+
+	public void setEndScreen(Text endScreen) {
+		this.endScreen = endScreen;
 	}
 }

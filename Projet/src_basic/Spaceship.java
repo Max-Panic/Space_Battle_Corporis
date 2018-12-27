@@ -101,15 +101,15 @@ public class Spaceship {
 	 * 
 	 * @see spawn()
 	 */
-	public Spaceship(Game g, Planet p)
+	public Spaceship(Game g, Planet p, Squadron s)
 	{
 		this.owner = p.getOwner();
-		this.squadronID = 0;
+		this.squadronID = s.getID();
 		this.productionTime = 1;
-		this.power = 1;
-		this.target = g.getPlanets().get(0);
+		this.power = 5;
+		this.target = s.getTarget();
 		
-		spawn(g, p);
+		spawn(g, p, s);
 		
 	}
 	/**
@@ -117,7 +117,7 @@ public class Spaceship {
 	 * @param g The game the spaceship belongs to
 	 * @param p The planet that produced the spaceship
 	 */
-	public void spawn(Game g, Planet p)
+	public void spawn(Game g, Planet p, Squadron s)
 	{
 		Random r = new Random();
 		boolean ok = false;
@@ -130,7 +130,7 @@ public class Spaceship {
 			this.getShape().setCenterY(posY);
 			
 			
-			if(p.getSpaceships().isEmpty())
+			if(s.getSpaceships().isEmpty())
 			{
 				if(this.getDistance(p) - this.radiusX - 5 > p.getRadius()+5)
 				{
@@ -160,7 +160,7 @@ public class Spaceship {
 		this.getShape().setRadiusX(getRadiusX());
 		this.getShape().setRadiusY(getRadiusY());
 		this.getShape().setFill(imagePattern);
-		p.getSpaceships().add(this);
+		s.getSpaceships().add(this);
 		g.getMain().getPrimaryGroup().getChildren().add(this.getShape());
 	}
 		
@@ -172,7 +172,7 @@ public class Spaceship {
 	 * @param target The destination of the ship (a planet)
 	 * @param g The game the ship belongs to
 	 */
-	public void goTo(Planet target, Game g)
+	public void goTo(Game g)
 	{
 		/*Polyline l = new Polyline();
 		List<Double> points = new ArrayList<Double>();			//
@@ -206,7 +206,6 @@ public void setTrajectory(Planet target, Game g) {
 		
 		for(int i = 0; i<points.size(); i++)
 		{		
-			//System.out.println(i);
 			this.trajectory.getPoints().add(points.get(i).getX());
 			this.trajectory.getPoints().add(points.get(i).getY());
 		}
@@ -287,6 +286,16 @@ public void setTrajectory(Planet target, Game g) {
 	{
 		return !Shape.intersect(shape1, shape2).getBoundsInLocal().isEmpty();
 	}
+	
+	public boolean interactifcollide(Planet p, Game g)
+    {
+
+        if (Spaceship.collide(this.shape, p.getShape()))
+        {
+            p.interact(this, g);
+        }
+        return Spaceship.collide(this.shape, p.getShape());
+    }
 	
 	public double getDistance(Spaceship p)
 	{
