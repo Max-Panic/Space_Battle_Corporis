@@ -222,13 +222,14 @@ public class Main extends Application{
 				{
 					this.primaryGame.getSquadrons().get(i).getSpaceships().get(j).getShape().setOnMouseClicked(e -> 
 					{
+						System.out.println("clickship");
 						for(int k = 0; k<primaryGame.getPlanets().size(); k++)
 						{
 							primaryGame.getPlanets().get(k).getShape().setOnMouseClicked(f -> 
 							{
 								Squadron o = getSquadronFromShape((Ellipse) e.getSource());
 								Planet p1 = getPlanetFromCircle((Circle) f.getSource());
-								primaryGame.getSquadrons().get(o.getID()-1).changeTarget(p1, primaryGame);
+								o.changeTarget(p1, primaryGame);
 							});
 						}
 					});

@@ -105,7 +105,7 @@ public class Planet
 	{
 	
 		this.owner = 0;
-		this.spawn(g); //appel de la fonction permettant de cr�er et faire appara�tre la plan�te
+		this.spawn(g);
 	}
 	/**
 	 * Create a new instance of Planet for the given owner in the given game, then spawn this planet.
@@ -117,14 +117,14 @@ public class Planet
 	{
 		Random r = new Random(); //instanciation d'un objet "Random" pour la g�n�ration de nombres al�atoires
 		this.owner = owner;
-		this.image = new Image("Green.jpg");
-		this.imagePattern = new ImagePattern(image);
+		
 		this.radius = 40 + r.nextInt(60 - 40);	//G�n�ration d'un entier al�atoire dans l'intervalle [50; 80] pour le rayon de la plan�te
 		g.getPlayers().add(new Player(g, owner));
 		
 		if(g.getPlanets().isEmpty())  //Test du nombre de plan�tes pr�sentes dans la partie pour voir si le test de la position relative aux autres plan�tes est n�cessaire
 		{
-			
+			this.image = new Image("Green.jpg");
+			this.imagePattern = new ImagePattern(image);
 			this.productionRate = 5; //assignation provisoire du taux de production de la plan�te � 1
 			
 			this.posX = r.nextInt((Main.xMax - 100) - (getRadius()+20)) + (getRadius()+20);	//G�n�ration d'un entier al�atoire dans l'intervalle [rayonPlan�te+20; TailleFen�treX - 100] pour la position X du centre de la plan�te

@@ -10,6 +10,7 @@ public class Player {
 
 	private int id;
 	private List<Planet> planetsOwned = new ArrayList<Planet>();
+	private List<Squadron> squadrons = new ArrayList<Squadron>();
 	/**
 	 * Percentage of ships the player will launch from his planets 
 	 */
@@ -66,6 +67,14 @@ public class Player {
 		this.planetsOwned = planetsOwned;
 	}
 	
+	public List<Squadron> getSquadrons() {
+		return squadrons;
+	}
+
+	public void setSquadrons(List<Squadron> squadrons) {
+		this.squadrons = squadrons;
+	}
+
 	public int getShipRate() {
 		return shipRate;
 	}
