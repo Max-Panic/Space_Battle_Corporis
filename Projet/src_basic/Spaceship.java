@@ -30,7 +30,7 @@ public class Spaceship {
 	/**
 	 * The speed of the spaceship
 	 */
-	private int speed = 150;
+	private int speed = 70;
 	/**
 	 * The x coordinate of the spaceship spawning point
 	 */
@@ -58,11 +58,11 @@ public class Spaceship {
 	/**
 	 * The time the ship takes to produce
 	 */
-	public static int productionTime = 5;
+	public static int productionTime = 3;
 	/**
 	 * The attack power of the ship
 	 */
-	public static int power = 5;
+	public static int power = 3;
 	/**
 	 * The ID of the squadron the ship belongs to
 	 */
@@ -109,6 +109,17 @@ public class Spaceship {
 		
 		spawn(g, p, s);
 		
+	}
+	
+	public Spaceship(Game g, Double posX, Double posY, Planet target)
+	{
+		this.target = target;
+		this.getShape().setCenterX(posX);
+		this.getShape().setCenterY(posY);
+		this.getShape().setRadiusX(getRadiusX());
+		this.getShape().setRadiusY(getRadiusY());
+		this.getShape().setFill(imagePattern);
+		g.getMain().getPrimaryGroup().getChildren().add(this.getShape());
 	}
 	/**
 	 * Spawn the spaceship in the given game around the given planet
@@ -183,13 +194,13 @@ public class Spaceship {
 		
 		
 		this.setTrajectory(target, g);
-		g.getMain().getPrimaryGroup().getChildren().add(this.trajectory);
 		getPathTransition().setNode(this.getShape());
 		getPathTransition().setDuration(Duration.seconds(getDistance(target)/this.getSpeed()));
 		getPathTransition().setPath(this.getTrajectory());
 		getPathTransition().setCycleCount(1);
 		getPathTransition().play();
 	}
+	
 	/**
 	 * Set the trajectory to the given planet for the ship 
 	 * @param target The destination of the path
@@ -198,8 +209,8 @@ public class Spaceship {
 public void setTrajectory(Planet target, Game g) {
 		
 		this.trajectory = new Polyline();
-		Point2D start = new Point2D(this.getPosX(), this.getPosY());
-		Point2D end = new Point2D(target.getPosX(), target.getPosY());
+		Point2D start = new Point2D(this.getShape().getCenterX(), this.getShape().getCenterY());
+		Point2D end = new Point2D(target.getShape().getCenterX(), target.getShape().getCenterY());
 		List<Point2D> points = buildPath(start, end, g, target);
 		
 		for(int i = 0; i<points.size(); i++)

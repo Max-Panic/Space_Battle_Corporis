@@ -30,7 +30,7 @@ import javafx.geometry.*;
  * The class managing the planets
  *
  */
-public class Planet 
+public class Planet
 {
 	/**
 	 * The planet identifier 
@@ -47,7 +47,7 @@ public class Planet
 	/**
 	 * The number of ships stored in this planet 
 	 */
-	private int power = 20; 
+	private int power = 100; 
 	/**
 	 * The number of ship that this planet produce for each production cycle
 	 */
@@ -119,7 +119,7 @@ public class Planet
 		this.owner = owner;
 		this.image = new Image("Green.jpg");
 		this.imagePattern = new ImagePattern(image);
-		this.radius = 20 + r.nextInt(30 - 20);	//G�n�ration d'un entier al�atoire dans l'intervalle [50; 80] pour le rayon de la plan�te
+		this.radius = 40 + r.nextInt(60 - 40);	//G�n�ration d'un entier al�atoire dans l'intervalle [50; 80] pour le rayon de la plan�te
 		g.getPlayers().add(new Player(g, owner));
 		
 		if(g.getPlanets().isEmpty())  //Test du nombre de plan�tes pr�sentes dans la partie pour voir si le test de la position relative aux autres plan�tes est n�cessaire
@@ -148,6 +148,7 @@ public class Planet
 			this.id = g.getPlanetIdMax()+1;			//Assignation de l'ID de la plan�te � la valeur max des ID des plan�tes pr�sente dans la partie incr�ment�e de 1
 			g.getPlanets().add(this);				//Ajout de la plan�te au tableau des plan�tes de la partie -> ajout r�el de la plan�te au jeu
 			g.setPlanetIdMax(this.id);				//Incr�mentation de la valeur de l'id maximale des plan�tes dans la partie
+			g.getPlayers().get(owner-1).getPlanetsOwned().add(this);
 		}
 		
 		else
@@ -164,35 +165,35 @@ public class Planet
 	 * @return A new instance of Planet 
 	 * @see Game
 	 */
-	public Planet(Game g, int posX, int posY)  
+	public Planet(Game g, int posX, int posY, int owner, int power, int radius, int ID)  
 	{
-		this.id = g.getPlanetIdMax()+1;
-		this.owner = 0;
+		this.id = ID;
+		this.owner = owner;
 		this.posX = posX;
 		this.posY = posY;
-		this.radius = 40;
+		this.radius = radius;
 
-		boolean ok = false;
-		
-		
-		for(int i = 0; i<g.getPlanets().size();i++)
-		{
-		
-			if(this.getDistance(g.getPlanets().get(i)) < g.getMinDist())
-			{
-				ok = false;
-				break;
-			}
-			ok = true;
-		}
-		
-		g.getPlanets().add(this);
-		g.setPlanetIdMax(this.id);
 		
 		this.getShape().setCenterX(getPosX());
 		this.getShape().setCenterY(getPosY());
 		this.getShape().setRadius(getRadius());
-		this.getShape().setFill(imagePattern);
+		if(owner == 1)
+			this.setNewImage("Green.jpg");
+		else if(owner>1)
+			this.setNewImage("red.jpg");
+		else
+			this.setNewImage("white.jpg");
+		
+		g.getPlanets().add(this);
+		if(g.getPlanetIdMax()<ID)
+			g.setPlanetIdMax(ID);
+		
+		for(int i = 0; i<g.getPlayers().size(); i++)
+			if(g.getPlayers().get(i).getId() == this.owner)
+			{
+				g.getPlayers().get(i).getPlanetsOwned().add(this);
+				break;
+			}	
 	}
 	/**
 	 * The method introducing the planets in the given game
@@ -203,7 +204,10 @@ public class Planet
 	{
 		Random r = new Random();
 		if(getOwner()==0)
+		{
+		this.owner = 0;
 		this.image = new Image("white.jpg");
+		}
 		else this.image = new Image("red.jpg");
 		this.imagePattern = new ImagePattern(image);
 		boolean ok = false;
@@ -294,12 +298,6 @@ public class Planet
 	
 	public void produceShips(Game g) 
 	{
-		
-		try {
-			Thread.sleep(Spaceship.productionTime);
-		} catch (InterruptedException e) {
-			System.out.println("erreur");
-		}
 		this.power = this.power + this.productionRate; //<- prise en compte du taux de production de la plan�te pour le nombre de vaisseaux produits
 		updatePower(g);
 	}
@@ -313,15 +311,17 @@ public class Planet
 	{
 		
 		int launchRate = player.getShipRate(); 
-		int shipLaunchedNbr = power*launchRate/100;
+		int shipLaunchedNbr = (Math.round(power*launchRate/100)*1000)/1000;
 		Squadron squadron = new Squadron(this.owner, target, g);
 		setPower(power - shipLaunchedNbr); 
+		updatePower(g);
 		
 		for(int i = 0; i<=shipLaunchedNbr; i++) //apparition d'un vaisseau pour chaque vaisseau lanc�, gestion des vagues de lancement � impl�menter ici
 		{
 			if(i>0)
 			{
 			Spaceship s = new Spaceship(g, this, squadron); 
+			
 			s.goTo(g); 
 			}
 		}
@@ -347,7 +347,6 @@ public class Planet
 	 */
 	public void interact(Spaceship ship, Game g) 
     {
-		  System.out.println(power);
 	        if(this.owner==ship.getOwner())
 	        {
 	            this.power = this.power + 1; 
@@ -359,26 +358,29 @@ public class Planet
 	            updatePower(g);
 	            if(this.power<=0)
 	            {
-	            	if(this.getOwner()>0)
-	            	{
-	            		for(int i = 1; i<g.getPlayers().size(); i++)
+	            	this.power = 0;
+	            	updatePower(g);
+	            		for(int i = 0; i<g.getPlayers().size(); i++)
 	            		{
+	            			
 	            			if(g.getPlayers().get(i).getId() == this.getOwner())
 	            			{
 	            				g.getPlayers().get(i).getPlanetsOwned().remove(this);
+	            				if(g.getPlayers().get(i).getPlanetsOwned().size()==0)
 	         	            	g.getPlayers().remove(i);
 	            			}
 	            		}
-	            	}
-		            this.owner = ship.getOwner(); 
-		            for(int i = 1; i<g.getPlayers().size(); i++)
-            		{
-            			if(g.getPlayers().get(i).getId() == this.getOwner())
-            			{
-            				g.getPlayers().get(owner-1).getPlanetsOwned().add(this);
-            			}
+	            	for(int j = 0; j<g.getPlayers().size(); j++)
+	            	{	
+	            		if(g.getPlayers().get(j).getId()==ship.getOwner())
+	            		{
+	            			this.owner = ship.getOwner(); 
+	            			g.getPlayers().get(j).getPlanetsOwned().add(this);
+	            			break;
+	            		}
             		}
-		            
+	            	
+        			
 		            if(this.owner == 1)
 		            {
 		            	this.setNewImage("Green.jpg");
@@ -387,10 +389,10 @@ public class Planet
 		            {
 		            	this.setNewImage("red.jpg");
 		            }
-	            	
-	            } 
-	        }    
-    }
+	            }
+	            
+	        } 
+	  	}    
 	
 	
 	/**

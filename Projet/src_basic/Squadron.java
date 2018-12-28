@@ -11,7 +11,26 @@ public class Squadron {
 	private Planet target;
 	private List<Spaceship> spaceships = new ArrayList<Spaceship>();
 	
+	/**
+	 * Create a new instance of Squadron with no effect
+	 */
+	public Squadron()
+	{
+		this.id = 0;
+	}
 
+	public Squadron(Game g, int owner, int ID,  int targetId, int nbSpaceShips, List<Double> spaceShipPositions)
+	{
+		this.id = ID;
+		this.owner = owner;
+		this.target = Main.getPlanetFromPlanetID(g, targetId);
+		Spaceship s;
+		for(int i = 0; i<nbSpaceShips*2; i = i+2)
+		{
+			s = new Spaceship(g, spaceShipPositions.get(i/2), spaceShipPositions.get(i/2+1), target);
+			s.goTo(g);
+		}
+	}
 	
 	public Squadron(int owner, Planet target, Game g)
 	{
@@ -22,10 +41,14 @@ public class Squadron {
 		g.getSquadrons().add(this);
 	}
 	
-	public void changeTarget(Planet target)
+	public void changeTarget(Planet target, Game g)
 	{
-		//r�cup�rer la demande
 		setTarget(target);
+		for(int i = 0; i<this.getSpaceships().size(); i++)
+		{
+			this.getSpaceships().get(i).setTarget(target);
+			this.getSpaceships().get(i).goTo(g);
+		}
 	}
 	
 	public int getOwner()

@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 import java.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +21,7 @@ import java.util.Random;
  * it will also manage the safeguard in the future
  * </p>
  */
-public class Game 
+public class Game
 {
 	/**
 	 * The Main the game belongs to
@@ -82,6 +83,53 @@ public class Game
 	 * @param main The Main the new Game belongs to
 	 * @return A new instance a Game
 	 */
+	
+	public Game(SaveState s, Main m)
+	{
+		this.main = m;
+		this.squadronIdMax = s.getNbSquadrons();
+		this.planetIdMax = s.getNbPlanets();
+		planets.clear();
+		this.minDist = 250;
+		
+		this.imagePattern = new ImagePattern(this.imgBackground);	//
+		getBackground().setX(0);									//
+		getBackground().setY(0);									//
+		getBackground().setWidth(Main.xMax);						//Affichage du background
+		getBackground().setHeight(Main.yMax);						//
+		getBackground().setFill(imagePattern);						//
+		main.getPrimaryGroup().getChildren().add(background);		//
+		
+		Player pl;
+		Planet p;
+		Squadron sq;
+		
+		
+		for(int j = 0; j<s.getNbPlayers(); j++)
+		{
+			int id = s.getIdPlayers().get(j);
+			pl = new Player(this, id);
+		}
+		
+		for(int i = 0; i<s.getNbPlanets()*5; i = i+5)
+		{
+			p = new Planet(this, s.getPlanetsSettings().get(i), s.getPlanetsSettings().get(i+1), s.getPlanetsSettings().get(i+2), s.getPlanetsSettings().get(i+3), s.getPlanetsSettings().get(i+4), s.getPlanetsSettings().get(i+5));
+		}
+		
+		for(int k = 0; k<s.getNbSquadrons()*3; k = k+3)
+		{
+			List<Double> sp = new ArrayList<Double>();
+			for(int l = 0; l<s.getSquadronSettings().get(k+3) ; l = l+2)
+			{
+				sp.add(s.getSpaceShipsPositions().get(l));
+				sp.add(s.getSpaceShipsPositions().get(l+1));
+			}
+			sq = new Squadron(this, (int) s.getSquadronSettings().get(k), (int) s.getSquadronSettings().get(k+1), (int) s.getSquadronSettings().get(k+2), (int) s.getSquadronSettings().get(k+3), sp);
+		}
+		
+		
+	}
+	
 	public Game(Main main) //contructeur de base servant � lancer une partie dans un main donn�, lance la partie sur le menu principal
 	{
 		this.main = main;
@@ -134,7 +182,6 @@ public class Game
 				
 		Planet p = new Planet(this, 1);
 		Planet target = new Planet(this, 2);	
-	
 		
 		for(int i = 0; i<nbPlanets - 2; i++)
 		{
